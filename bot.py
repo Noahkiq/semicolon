@@ -1,11 +1,23 @@
 from discord.ext import commands
 import subprocess
-import time
+import random
 import re
 
 
 bot = commands.Bot(command_prefix=[';', 'semicolon '])
 badarg = re.compile(r"-\w")
+
+
+def formatSentence(variableList, finalSeparator="and"):
+    """Turn a list of variables into a string, like 'Bill, John, and Jeff.'"""
+    # Thanks to StackOverflow user Shashank: https://stackoverflow.com/a/30084397
+    n = len(variableList)  # Creates a variable for the number of objects being formatted
+    if n > 1:
+        return ('{}, '*(n-2) + '{} Q*Q*Q {}').format(*variableList).replace("Q*Q*Q", finalSeparator)  # shut up
+    elif n > 0:
+        return variableList[0]  # If only one string was input, it gets returned.
+    else:
+        return ''  # If user entered no input, return nothing.
 
 
 @bot.event
@@ -31,18 +43,11 @@ async def reverse(ctx, *, text):
 @bot.command(aliases=['cow', 'csay'])
 async def cowsay(ctx, *, text):
     """Spice up your funny quotes and memes with a talking cow!"""
-    try:
-        args = text.split()
-        args[0] = badarg.sub("...", args[0])
-        output = subprocess.check_output(["/usr/bin/cowsay", " ".join(args).replace("head-in", "default")])
-        output = output.decode("utf-8")
-        await ctx.send(f"here you go {ctx.author.mention} senpai~ ❤ ```{output}```")
-    except TimeoutError as e:
-        await ctx.send("an error occurred while running the command")
-        ltime = time.localtime(time.time())
-        timestring = f'{ltime.tm_year}-{ltime.tm_mon}-{ltime.tm_mday} {ltime.tm_hour}:{ltime.tm_min}'
-        with open('errors.txt', 'a') as logfile:
-            logfile.write(f'[{timestring}] {e}\n')
+    args = text.split()
+    args[0] = badarg.sub("...", args[0])
+    output = subprocess.check_output(["/usr/bin/cowsay", " ".join(args).replace("head-in", "default")])
+    output = output.decode("utf-8")
+    await ctx.send(f"here you go {ctx.author.mention} senpai~ ❤ ```{output}```")
 
 
 @bot.command(aliases=['cookie'])
@@ -57,5 +62,24 @@ async def fortunecow(ctx):
     """Crack open a virtual cookie. Then feed it to a cow."""
     output = subprocess.check_output("fortune | cowsay", shell=True).decode("utf-8")
     await ctx.send(f"```{output}```")
+
+
+@bot.command(aliases=['diceroll', 'rolldice'])
+async def roll(ctx, sides=6, dice=1):
+    """Roll a die! Or multiple dice with different sides!"""
+    if sides < 1 or dice < 1:
+        await ctx.send("Please use numbers greater than zero :heart:")
+        return  # exit the command
+
+    diceRolled = 0
+    diceOutput = []
+    while diceRolled < dice:
+        diceRolled += 1
+        diceOutput.append(random.randint(1, sides))
+
+    numbers = formatSentence(diceOutput, "and a")
+    output = f"I rolled a {numbers}! :D"
+    await ctx.send(output)
+
 
 bot.run(open("token.txt").read().split("\n")[0])
