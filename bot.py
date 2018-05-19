@@ -70,6 +70,8 @@ async def roll(ctx, sides=6, dice=1):
     if sides < 1 or dice < 1:
         await ctx.send("Please use numbers greater than zero :heart:")
         return  # exit the command
+    if sides*dice > 2000:
+        await ctx.send("These numbers look kinda big...")
 
     diceRolled = 0
     diceOutput = []
@@ -79,6 +81,8 @@ async def roll(ctx, sides=6, dice=1):
 
     numbers = formatSentence(diceOutput, "and a")
     output = f"I rolled a {numbers}! :D"
+    if len(output) > 2000:
+        output = "hey!! you tricked me into making a big message!! no fair :(("
     await ctx.send(output)
 
 
