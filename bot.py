@@ -70,7 +70,7 @@ async def roll(ctx, sides=6, dice=1):
     if sides < 1 or dice < 1:
         await ctx.send("Please use numbers greater than zero :heart:")
         return  # exit the command
-    if sides*dice > 2000:
+    if len(f'{sides}') > 25 or dice > 100:
         await ctx.send("These numbers look kinda big...")
 
     diceRolled = 0
