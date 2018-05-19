@@ -1,11 +1,9 @@
 from discord.ext import commands
 import subprocess
 import random
-import re
 
 
 bot = commands.Bot(command_prefix=[';', 'semicolon '])
-badarg = re.compile(r"-.")
 
 
 def formatSentence(variableList, finalSeparator="and"):
@@ -43,11 +41,11 @@ async def reverse(ctx, *, text):
 @bot.command(aliases=['cow', 'csay'])
 async def cowsay(ctx, *, text):
     """Spice up your funny quotes and memes with a talking cow!"""
-    args = text.split()
-    args[0] = badarg.sub("...", args[0])
-    output = subprocess.check_output(["/usr/bin/cowsay", " ".join(args).replace("head-in", "default")])
+    command = ["cowsay"]
+    command += text.replace('-f head-in', '').split()
+    output = subprocess.check_output(command)
     output = output.decode("utf-8")
-    await ctx.send(f"here you go {ctx.author.mention} senpai~ ❤ ```{output}```")
+    await ctx.send(f"here you go {ctx.author.mention} :D ```{output}```")
 
 
 @bot.command(aliases=['cookie'])
