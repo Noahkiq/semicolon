@@ -5,7 +5,7 @@ import re
 
 
 bot = commands.Bot(command_prefix=[';', 'semicolon '])
-badarg = re.compile(r"-\w")
+badarg = re.compile(r"-.")
 
 
 def formatSentence(variableList, finalSeparator="and"):
@@ -70,7 +70,7 @@ async def roll(ctx, sides=6, dice=1):
     if sides < 1 or dice < 1:
         await ctx.send("Please use numbers greater than zero :heart:")
         return  # exit the command
-    if len(f'{sides}') > 25 or dice > 100:
+    if len(f'{sides*dice}') > 1000 or len(f'{sides}') > 25 or dice > 100:
         await ctx.send("These numbers look kinda big...")
         return
 
