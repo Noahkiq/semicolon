@@ -26,12 +26,12 @@ def formatSentence(variableList, finalSeparator="and"):
         return ''  # If user entered no input, return nothing.
 
 
-def cows(cowcmd, arguments):
+def cowsayHelper(cowcmd, author, arguments):
     """cowsay helper function"""
     command = [cowcmd]
     command += arguments.replace('-f head-in', '').split()
     output = subprocess.check_output(command).decode("utf-8")
-    return longMessage(f"here you go {ctx.author.mention} :D ```{output}```")
+    return longMessage(f"here you go {author.mention} :D ```{output}```")
 
 
 @bot.event
@@ -60,7 +60,7 @@ async def reverse(ctx, *, text):
 async def cowsay(ctx, *, text):
     """Spice up your funny quotes and memes with a talking cow!"""
     try:
-        await ctx.send(cowsay("cowsay", text))
+        await ctx.send(cowsayHelper("cowsay", ctx.author, text))
     except:
         await ctx.send("oi. i dunno what you just tried to do but you broke the command. don't do that again >:(")
 
@@ -69,7 +69,7 @@ async def cowsay(ctx, *, text):
 async def cowthink(ctx, *, text):
     """It's like cowsay, but the cow's thinking."""
     try:
-        await ctx.send(cowsay("cowthink", text))
+        await ctx.send(cowsayHelper("cowthink", ctx.author, text))
     except:
         await ctx.send("oi. i dunno what you just tried to do but you broke the command. don't do that again >:(")
 
